@@ -1,0 +1,79 @@
+PARAMS:
+  BATCH_SIZE: 8
+  EPOCH: 1500
+  N_SAMPLE: 1
+  INPUT_FRAME: 4
+  OUTPUT_FRAME: 15
+  COVERAGE: 0.6
+  INPUT_SIZE: 256
+  N_FRAME: 8
+  CROP_SIZE: 128
+  PARSER:
+    FUNCTION: data_parser
+    PARAMS:
+      SCALE: 32
+      OFFSET: 0
+      RAIN_TH: 0.01
+      RAIN2DBZ: True
+      MIN_VALUE: -9
+  NORMALIZER:
+    FUNCTION: min_max_normalizer
+    PARAMS:
+      MIN_VALUE: -9
+      MAX_VALUE: 60
+GENERATOR:
+  LOSS:
+    FUNCTION: PixelWiseRegularizer
+    PARAMS:
+      LAMBDA: 30
+      MIN_VALUE: 0.5
+      MAX_VALUE: 1.5
+  OPTIMIZER:
+    FUNCTION: Adam
+    PARAMS:
+      LR: 0.00002
+      BETAS: [0., 0.999]
+  SCHEDULER:
+    FUNCTION: 
+    PARAMS:
+DISCRIMINATOR:
+  ITER: 5
+  LOSS:
+    FUNCTION: HingeLoss
+    PARAMS:
+      MARGIN: 1.
+      LABEL_SMOOTHING: False
+  OPTIMIZER:
+    FUNCTION: Adam
+    PARAMS:
+      LR: 0.0001
+      BETAS: [0.3, 0.999]
+  SCHEDULER:
+    FUNCTION:
+    PARAMS:
+EVALUATION:
+  THRESHOLDS: [5, 10, 20, 30]
+  POOLING_SCALES: [1, 4, 16]
+  PARSER:
+TRAIN:
+  VAL_PERIOD: 5
+  CHECKPOINT_PERIOD: 5
+VAL:
+  BATCH_SIZE: 16
+TEST:
+  BATCH_SIZE: 1
+DATALOADER:
+  NUM_WORKERS: 32
+  PIN_MEMORY: True
+SETTINGS:
+  IMPORT_CKPT_PATH:
+  NUM_GPUS: 1
+  RNG_SEED: 0
+  DATA_PATH: ["/home/wangup/Documents/Nimrod/Nimrod_2016.dat", "/home/wangup/Documents/Nimrod/Nimrod_2017.dat", "/home/wangup/Documents/Nimrod/Nimrod_2018.dat"]
+  DATA_TYPE: int16
+  DATA_SHAPE: [[105408, 512, 512], [105120, 512, 512], [105120, 512, 512]]
+  RAIN_RECORD_PATH: /home/yunting/Documents/research/DGMR-pytorch/rain_record_Nimrod_2016_Nimrod_2017_Nimrod_2018.csv
+TENSORBOARD:
+  SAVE_DIR: ./
+  NAME: DGMRGenerator
+  VERSION: DGMR-GAN-INSPECT
