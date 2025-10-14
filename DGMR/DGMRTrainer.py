@@ -246,8 +246,12 @@ class DGMRTrainer(pl.LightningModule):
         ##### TRAIN GENERATOR #####
         if optimizer_idx == 0:
             G_loss = self.generator_loss(pred, y)
-            GD_loss = self.generator_d_loss(self.discriminator(x, pred.detach()))
-            
+            # 原来
+            # GD_loss = self.generator_d_loss(self.discriminator(x, pred.detach()))
+
+            # 修改
+            GD_loss = self.generator_d_loss(self.discriminator(x, pred))
+
             train_G_loss = G_loss + GD_loss
             log_dict["G/ G loss"] = G_loss.detach()
             log_dict["G/ D loss"] = GD_loss.detach()
